@@ -12,6 +12,7 @@ function App() {
 
   const onCompress = async (values) => {
     console.log(values)
+    console.log(filePath)
     const res = await axios.get('http://localhost:3300/compression', {
       params: {
         color: values.color || 256,
@@ -27,7 +28,7 @@ function App() {
     link.download = fileName
     link.click()
 
-    message.success('压缩成功');
+    message.success('压缩成功')
   }
 
   const props = {
@@ -40,7 +41,7 @@ function App() {
         console.log(info.file, info.fileList)
       }
       if (status === 'done') {
-        setFilePath(info.file.filePath)
+        setFilePath(info.file.response)
         setFileName(info.file.name)
         message.success(`${info.file.name} file uploaded successfully.`)
       } else if (status === 'error') {
