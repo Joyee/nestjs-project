@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://unpkg.com/exceljs@4.4.0/dist/exceljs.min.js"></script>
+  </head>
+  <body>
+    <div>
+      <input type="file" id="fileInput" />
+
+      <script>
+        const fileInput = document.getElementById('fileInput')
+        fileInput.onchange = async (e) => {
+          const file = fileInput.files[0]
+          const { Workbook } = ExcelJS
+          const workbook = new Workbook()
+          const workbook2 = await workbook.xlsx.load(file)
+
+          workbook2.eachSheet((sheet, sheetNumber) => {
+            console.log('工作表:' + sheetNumber)
+
+            const value = sheet.getSheetValues()
+            console.log(value)
+          })
+        }
+
+        async function main() {
+          const { Workbook } = ExcelJS
+          const workbook = new Workbook()
+          const worksheet = workbook.addWorksheet('工作表一')
+          worksheet.columns = [
+            { header: 'ID', key: 'id', width: 20 },
+            { header: '姓名', key: 'name', width: 30 },
+            { header: '出生日期', key: 'birthday', width: 30 },
+            { header: '手机号', key: 'phone', width: 50 },
+          ]
+
+          const data = [
+            { id: 1, name: '光光', birthday: new Date('1994-07-07'), phone: '13255555555' },
+            { id: 2, name: '东东', birthday: new Date('1994-04-14'), phone: '13222222222' },
+            { id: 3, name: '小刚', birthday: new Date('1995-08-08'), phone: '13211111111' },
+          ]
+          worksheet.addRows(data)
+
+          worksheet.eachRow((row, rowIndex) => {
+            row.eachCell((cell) => {
+              if (rowIndex === 0) {
+                cell.style = {
+                  font: { color: { argh: 'ffffff' } },
+                }
+              } else if (rowIndex === 1) {
+                cell.style = {
+                  font: {
+                    size: 10,
+                    bold: true,
+                    color: { argh: 'ffffff' },
+                  },
+                  alignment: { vertical: 'middle', horizontal: 'center' },
+                  fill: {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: '000000' },
+                  },
+                  border: {
+                    top: { style: 'dashd', color: { argb: '0000ff' } },
+                    left: { style: 'dashd', color: { argb: '0000ff' } },
+                    bottom: { style: 'dashd', color: { argb: '0000ff' } },
+                    right: { style: 'dashd', color: { argb: '0000ff' } },
+                  },
+                }
+              } else {
+                cell.style = {
+                  font: {
+                    size: 10,
+                    bold: true,
+                  },
+                  alignment: { vertical: 'middle', horizontal: 'left' },
+                  border: {
+                    top: { style: 'dashed', color: { argb: '0000ff' } },
+                    left: { style: 'dashed', color: { argb: '0000ff' } },
+                    bottom: { style: 'dashed', color: { argb: '0000ff' } },
+                    right: { style: 'dashed', color: { argb: '0000ff' } },
+                  },
+                }
+              }
+            })
+          })
+
+          const arrayBuffer = new ArrayBuffer(10 * 1024 * 1024)
+          const res = await workbook.xlsx.writeBuffer(arrayBuffer)
+
+          console.log(res.buffer)
+          download(res.buffer, '明细表.xlsx')
+        }
+
+        function download(arrayBuffer, filename = '数据.xlsx') {
+          const link = document.createElement('a')
+
+          const blob = new Blob([arrayBuffer])
+          const url = URL.createObjectURL(blob)
+          link.href = url
+          link.download = filename
+
+          document.body.appendChild(link)
+
+          link.click()
+          link.addEventListener('click', () => {
+            link.remove()
+            // 释放掉blob对象
+            window.URL.revokeObjectURL(href)
+          })
+        }
+
+        main()
+      </script>
+    </div>
+  </body>
+</html>
