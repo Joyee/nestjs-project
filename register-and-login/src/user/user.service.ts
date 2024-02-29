@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
+import { WechatUserInfo } from '../auth/auth.interface';
 
 @Injectable()
 export class UserService {
@@ -27,5 +28,19 @@ export class UserService {
 
   async findOne(id: string) {
     return await this.userRepository.findOneBy({ id });
+  }
+
+  async findByOpenid(openid: string) {
+    return await this.userRepository.findOne({ where: { openid } });
+  }
+
+  async registerByWechat(userInfo: WechatUserInfo) {
+    const { nickname, openid, headimgurl } = userInfo;
+    const newUser = await this.userRepository.create({
+      nickName: nickname,
+      openid,
+      avatar: headimgurl,
+    });
+    return await this.userRepository.save(newUser);
   }
 }

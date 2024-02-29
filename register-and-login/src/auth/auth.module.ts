@@ -9,7 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService, ConfigModule } from '@nestjs/config';
 import { UserModule } from '../user/user.module';
 import { JwtStrategy } from '../common/strategies/jwt.strategy';
-
+import { HttpModule } from '@nestjs/axios';
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
@@ -30,6 +30,7 @@ import { JwtStrategy } from '../common/strategies/jwt.strategy';
     //   secret: 'wangyibo',
     //   signOptions: { expiresIn: '30m' },
     // }),
+    HttpModule,
     UserModule,
   ],
   controllers: [AuthController],

@@ -25,6 +25,9 @@ export class User {
   @Column({ default: null })
   email: string;
 
+  @Column({ default: null })
+  openid: string;
+
   @Column('simple-enum', {
     enum: ['root', 'author', 'visitor'],
     default: 'root',
