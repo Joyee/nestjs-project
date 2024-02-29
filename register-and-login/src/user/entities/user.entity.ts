@@ -1,7 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  BeforeInsert,
+  OneToMany,
+} from 'typeorm';
 import { Exclude } from 'class-transformer';
 import * as bcrypt from 'bcryptjs';
 import { ApiProperty } from '@nestjs/swagger';
+import { Post } from '../../posts/entities/post.entity';
 
 @Entity('user')
 export class User {
@@ -33,6 +40,9 @@ export class User {
     default: 'root',
   })
   role: string;
+
+  @OneToMany(() => Post, (post) => post.author)
+  posts: Post[];
 
   @Column({
     name: 'create_time',
