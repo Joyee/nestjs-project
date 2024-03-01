@@ -11,6 +11,8 @@ import { User } from '../../user/entities/user.entity';
 import { Category } from '../../category/entities/category.entity';
 import { Exclude } from 'class-transformer';
 import { Tag } from '../../tag/entities/tag.entity';
+import { PostInfoDto } from '../dto/post.dto';
+import { response } from 'express';
 
 @Entity('post')
 export class Post {
@@ -49,7 +51,7 @@ export class Post {
     name: 'is_recommend',
     comment: '推荐显示',
   })
-  isRecommend: boolean;
+  isRecommend: number;
 
   @Column('simple-enum', { enum: ['draft', 'publish'], comment: '文章状态' })
   status: string;
@@ -78,4 +80,23 @@ export class Post {
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   update_time: Date;
+
+  // 整理返回数据的格式
+  toResponseObject(): PostInfoDto {
+    const responseObj: PostInfoDto = {
+      ...this,
+      isRecommend: this.isRecommend ? true : false,
+    };
+    if (this.category) {
+      responseObj.category = this.category.name;
+    }
+    if (this.tags && this.tags.length > 0) {
+      responseObj.tags = this.tags.map((tag) => tag.name);
+    }
+    if (this.author && this.author.id) {
+      responseObj.userId = this.author.id;
+      responseObj.author = this.author.nickName || this.author.username;
+    }
+    return responseObj;
+  }
 }
