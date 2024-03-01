@@ -3,11 +3,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import envConfig from '../config/env';
-import { User } from './user/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
 import { TagModule } from './tag/tag.module';
 import { CategoryModule } from './category/category.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { CosService } from './common/shared-service/cos.service';
 
 @Module({
   imports: [
@@ -39,5 +41,7 @@ import { CategoryModule } from './category/category.module';
     TagModule,
     CategoryModule,
   ],
+  controllers: [AppController],
+  providers: [AppService, CosService],
 })
 export class AppModule {}

@@ -172,3 +172,20 @@ const posts = await this.postsRepository
 - 同一个人不停的属性页面，也容易导致数据准确率不高
 
 解决方案就是使用`redis`
+
+### 上传文件到对象存储 COS
+
+文件上传过程实现流程:
+
+- 先获取到上传的文件
+- 根据文件后缀判断文件类型，指定上传文件的路径（将不同的文件类型上传到对应的文件夹中）
+- MD5 加密文件生成字符串，对文件进行命名
+- 查询文件是否已存在于 COS 中，如果存在，则拼接文件路径返回；不存在，调用腾讯云 API 将文件上传到 cos 中
+
+#### Nest 内置文件上传
+
+Nest.js 为 Express 提供了一个基于`multer`中间件包的内置模块，`Multer`处理以`multipart/form-data`格式发布的数据，该格式主要用于通过 HTTP POST 请求上传文件。
+
+安装类型包: `pnpm i @types/multer -D`
+
+要实现单个文件上传，只需要将 `FileInterceptor()` 拦截器绑定到路由， 然后使用`@UploadFile`装饰器从请求中提取文件。
