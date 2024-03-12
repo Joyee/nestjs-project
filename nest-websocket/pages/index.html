@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script
+      src="https://cdn.socket.io/4.3.2/socket.io.min.js"
+      integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      const socket = io('http://localhost:3000');
+      socket.on('connect', function () {
+        console.log('Connected');
+
+        socket.emit('findAllAaa', (response) => {
+          console.log('findAllAaa', response);
+        });
+        socket.emit('findOneAaa', 1, (response) => {
+          console.log('findOneAaa', response);
+        });
+        socket.emit('createAaa', { name: 'wangyibo' }, (response) => {
+          console.log('findOneAaa', response);
+        });
+        socket.emit('updateAaa', { id: 2, name: 'wangnagebo' }, (response) => {
+          console.log('updateAaa', response);
+        });
+        socket.emit('removeAaa', 2, (response) => {
+          console.log('removeAaa', response);
+        });
+        socket.on('wangyibo', function (data) {
+          console.log('[wangyibo]', data);
+        });
+      });
+      socket.on('disconnect', () => {
+        console.log('Disconnected');
+      })
+    </script>
+  </body>
+</html>
